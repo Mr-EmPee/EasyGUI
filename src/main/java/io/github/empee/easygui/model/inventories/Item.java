@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 @RequiredArgsConstructor(staticName = "of")
 public class Item implements Comparable<Item> {
 
-  public static final Item DEFAULT = Item.of(new ItemStack(Material.AIR)).setPriority(0);
+  public static final Item DEFAULT = Item.of(new ItemStack(Material.AIR)).priority(0);
 
   private final Supplier<ItemStack> itemstack;
   private Supplier<Integer> priority;
@@ -35,7 +35,7 @@ public class Item implements Comparable<Item> {
   }
 
   @Contract("_ -> this")
-  public Item setClickHandler(Consumer<InventoryClickEvent> clickHandler) {
+  public Item clickHandler(Consumer<InventoryClickEvent> clickHandler) {
     this.clickHandler = clickHandler;
     return this;
   }
@@ -53,12 +53,17 @@ public class Item implements Comparable<Item> {
   }
 
   @Contract("_ -> this")
-  public Item setPriority(Integer priority) {
-    return setPriority(() -> priority);
+  public Item visibility(Supplier<Boolean> supplier) {
+    return priority(() -> supplier.get() ? 0 : -1);
   }
 
   @Contract("_ -> this")
-  public Item setPriority(Supplier<Integer> priority) {
+  public Item priority(Integer priority) {
+    return priority(() -> priority);
+  }
+
+  @Contract("_ -> this")
+  public Item priority(Supplier<Integer> priority) {
     this.priority = priority;
     return this;
   }
@@ -80,17 +85,17 @@ public class Item implements Comparable<Item> {
   }
 
   @Contract("_,_ -> this")
-  public Item setSlot(int row, int col) {
-    return setSlot(Slot.of(row, col));
+  public Item slot(int row, int col) {
+    return slot(Slot.of(row, col));
   }
 
   @Contract("_ -> this")
-  public Item setSlot(Slot slot) {
-    return setSlot(() -> slot);
+  public Item slot(Slot slot) {
+    return slot(() -> slot);
   }
 
   @Contract("_ -> this")
-  public Item setSlot(Supplier<Slot> slot) {
+  public Item slot(Supplier<Slot> slot) {
     this.slot = slot;
     return this;
   }

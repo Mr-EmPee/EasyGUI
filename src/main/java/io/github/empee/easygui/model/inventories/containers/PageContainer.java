@@ -57,7 +57,7 @@ public class PageContainer implements InventoryContainer {
         break;
       }
 
-      item.setSlot(view.get(i));
+      item.slot(view.get(i));
     }
 
     gui.updateInventory();
