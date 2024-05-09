@@ -54,7 +54,7 @@ public class Item implements Comparable<Item> {
 
   @Contract("_ -> this")
   public Item visibility(Supplier<Boolean> supplier) {
-    return priority(() -> supplier.get() ? 0 : -1);
+    return priority(() -> supplier.get() ? 1 : -1);
   }
 
   @Contract("_ -> this")
@@ -101,6 +101,10 @@ public class Item implements Comparable<Item> {
   }
 
   public Slot getSlot() {
+    if (slot == null) {
+      return null;
+    }
+
     return slot.get();
   }
 

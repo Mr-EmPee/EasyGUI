@@ -24,7 +24,18 @@ public class PageContainer implements InventoryContainer {
 
   public static PageContainer of(InventoryGUI gui, List<Slot> view, List<Item> items) {
     var container = new PageContainer(gui, view);
+
     container.addContent(items);
+
+    int i=0;
+    for (Slot slot : view) {
+      if (i >= items.size()) {
+        break;
+      }
+
+      items.get(i++).slot(slot);
+    }
+
     return container;
   }
 
