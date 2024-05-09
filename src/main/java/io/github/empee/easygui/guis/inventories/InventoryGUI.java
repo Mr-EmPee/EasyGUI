@@ -1,8 +1,8 @@
 package io.github.empee.easygui.guis.inventories;
 
+import io.github.empee.easygui.guis.GUI;
 import io.github.empee.easygui.model.inventories.Item;
 import io.github.empee.easygui.model.inventories.Slot;
-import io.github.empee.easygui.guis.GUI;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +17,9 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 @Getter @Setter
 @RequiredArgsConstructor(staticName = "of")
@@ -37,14 +36,16 @@ public class InventoryGUI implements GUI, InventoryHolder {
   private Inventory inventory;
 
   @Getter(AccessLevel.NONE)
-  private final SortedSet<Item> content = new TreeSet<>(Collections.reverseOrder());
+  private final List<Item> content = new ArrayList<>();
 
   public final void addItem(Item item) {
     content.add(item);
+    content.sort(Comparator.reverseOrder());
   }
 
   public final void addItems(List<Item> items) {
     content.addAll(items);
+    content.sort(Comparator.reverseOrder());
   }
 
   public final Item getItem(int row, int col) {
