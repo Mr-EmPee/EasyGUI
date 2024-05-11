@@ -125,12 +125,12 @@ public class Slot {
     return borders(gui, 0);
   }
 
-  public static int toRaw(int row, int col) {
-    return (row * 9) + col;
+  public static int toRaw(int row, int col, int totalCols) {
+    return (row * totalCols) + col;
   }
 
-  public int toRaw() {
-    return toRaw(row, col);
+  public int toRaw(int totalCols) {
+    return toRaw(row, col, totalCols);
   }
 
 }

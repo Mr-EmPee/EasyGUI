@@ -1,8 +1,8 @@
 package io.github.empee.easygui.model.inventories.containers;
 
+import io.github.empee.easygui.guis.inventories.InventoryGUI;
 import io.github.empee.easygui.model.inventories.Item;
 import io.github.empee.easygui.model.inventories.Slot;
-import io.github.empee.easygui.guis.inventories.InventoryGUI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -42,7 +42,7 @@ public class PageContainer implements InventoryContainer {
   public void addContent(List<Item> items) {
     items.forEach(Item::removeSlot);
     content.addAll(items);
-    gui.addItems(items);
+    gui.inserts(items);
   }
 
   public void update() {
