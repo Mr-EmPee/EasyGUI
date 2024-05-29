@@ -4,7 +4,7 @@ plugins {
   id("com.vanniktech.maven.publish") version "0.28.0"
 }
 
-version = findProperty("tag") ?: "0.0.2-SNAPSHOT"
+version = findProperty("tag") ?: "0.0.3-SNAPSHOT"
 
 dependencies {
   compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
