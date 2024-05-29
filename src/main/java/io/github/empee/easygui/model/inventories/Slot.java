@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -133,4 +134,11 @@ public class Slot {
     return toRaw(row, col, totalCols);
   }
 
+  public interface Generator {
+    static Generator of(List<Slot> slots) {
+      return offset -> Collections.unmodifiableList(slots);
+    }
+
+    List<Slot> generate(int offset);
+  }
 }
