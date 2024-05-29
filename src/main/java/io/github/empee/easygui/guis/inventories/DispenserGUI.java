@@ -18,6 +18,6 @@ public class DispenserGUI extends InventoryGUI {
   }
 
   protected Inventory createInventory() {
-    return Bukkit.createInventory(this, InventoryType.DISPENSER, title);
+    return Bukkit.createInventory(this, InventoryType.DISPENSER, title.get());
   }
 }

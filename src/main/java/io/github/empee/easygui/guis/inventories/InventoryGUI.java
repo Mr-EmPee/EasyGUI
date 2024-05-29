@@ -2,9 +2,11 @@ package io.github.empee.easygui.guis.inventories;
 
 import io.github.empee.easygui.model.inventories.Item;
 import io.github.empee.easygui.model.inventories.Slot;
+import io.github.empee.easygui.utils.ServerVersion;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -19,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Accessors(fluent = true, chain = true)
 public abstract class InventoryGUI implements InventoryHolder {
@@ -27,20 +30,32 @@ public abstract class InventoryGUI implements InventoryHolder {
 
   private final List<Item> content = new ArrayList<>();
 
-  @Setter @Getter
-  protected String title = "";
+  @Getter
+  protected Supplier<String> title = () -> "";
 
-  @Setter @Getter
+  @Setter
+  @Getter
   protected Consumer<InventoryCloseEvent> closeHandler;
-  @Setter @Getter
+  @Setter
+  @Getter
   protected Consumer<InventoryClickEvent> clickHandler;
-  @Setter @Getter
+  @Setter
+  @Getter
   protected Consumer<InventoryDragEvent> dragHandler;
 
   public abstract int getLength();
+
   public abstract int getHeight();
 
   protected abstract Inventory createInventory();
+
+  public void title(String title) {
+    title(() -> title);
+  }
+
+  public void title(Supplier<String> title) {
+    this.title = title;
+  }
 
   public void inserts(Item... items) {
     inserts(List.of(items));
@@ -67,24 +82,43 @@ public abstract class InventoryGUI implements InventoryHolder {
         .orElse(Item.DEFAULT);
   }
 
-  public final void updateInventory() {
-    ItemStack[] itemStacks = new ItemStack[inventory.getSize()];
-    for (int i=0; i<itemStacks.length; i++) {
+  public final void update() {
+    if (ServerVersion.isGreaterThan(1, 20)) {
+      updateTitle();
+    }
+
+    updateContent();
+  }
+
+  private void updateTitle() {
+    inventory.getViewers().forEach(player -> {
+      var view = player.getOpenInventory();
+      if (view.getTitle().equals(title.get())) {
+        return;
+      }
+
+      player.getOpenInventory().setTitle(title.get());
+    });
+  }
+
+  private void updateContent() {
+    ItemStack[] content = new ItemStack[inventory.getSize()];
+    for (int i = 0; i < content.length; i++) {
       var row = i / getLength();
       var col = i % getLength();
 
       var item = getItem(Slot.of(row, col));
 
-      itemStacks[i] = item.getItemstack();
+      content[i] = item.getItemstack();
     }
 
-    inventory.setContents(itemStacks);
+    inventory.setContents(content);
   }
 
   public Inventory getInventory() {
     if (inventory == null) {
       inventory = createInventory();
-      updateInventory();
+      update();
     }
 
     return inventory;
@@ -121,7 +155,7 @@ public abstract class InventoryGUI implements InventoryHolder {
     }
   }
 
-  public void open(Player player) {
+  public void open(HumanEntity player) {
     player.openInventory(getInventory());
   }
 

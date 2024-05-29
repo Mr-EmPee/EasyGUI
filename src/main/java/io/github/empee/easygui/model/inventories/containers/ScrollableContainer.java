@@ -98,7 +98,7 @@ public class ScrollableContainer {
     this.offset = offset;
 
     update();
-    gui.updateInventory();
+    gui.update();
   }
 
   private void update() {

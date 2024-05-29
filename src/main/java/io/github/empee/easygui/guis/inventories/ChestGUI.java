@@ -16,6 +16,6 @@ public class ChestGUI extends InventoryGUI {
   }
 
   protected Inventory createInventory() {
-    return Bukkit.createInventory(this, 9 * height, title);
+    return Bukkit.createInventory(this, 9 * height, title.get());
   }
 }
