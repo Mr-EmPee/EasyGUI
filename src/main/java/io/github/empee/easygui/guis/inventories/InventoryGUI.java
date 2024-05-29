@@ -12,17 +12,20 @@ import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Accessors(fluent = true, chain = true)
 public abstract class InventoryGUI implements InventoryHolder {
 
-  private final List<Item> content = new ArrayList<>();
   private Inventory inventory;
+
+  private final List<Item> content = new ArrayList<>();
 
   @Setter @Getter
   protected String title = "";
@@ -39,25 +42,29 @@ public abstract class InventoryGUI implements InventoryHolder {
 
   protected abstract Inventory createInventory();
 
-  public void inserts(Item... item) {
-    inserts(List.of(item));
+  public void inserts(Item... items) {
+    inserts(List.of(items));
   }
 
   public void inserts(List<Item> items) {
     content.addAll(items);
-    content.sort(Comparator.reverseOrder());
   }
 
-  public Item getItem(int row, int col) {
-    var slot = Slot.of(row, col);
+  public void remove(List<Item> items) {
+    content.removeAll(items);
+  }
 
-    for (var item : content) {
-      if (slot.equals(item.getSlot())) {
-        return item;
-      }
-    }
+  public List<Item> getItems(@Nullable Slot slot) {
+    return content.stream()
+        .filter(item -> Objects.equals(slot, item.getSlot()))
+        .toList();
+  }
 
-    return Item.DEFAULT;
+  public Item getItem(Slot slot) {
+    return getItems(slot).stream()
+        .filter(Item::isVisible)
+        .max(Comparator.naturalOrder())
+        .orElse(Item.DEFAULT);
   }
 
   public final void updateInventory() {
@@ -66,10 +73,7 @@ public abstract class InventoryGUI implements InventoryHolder {
       var row = i / getLength();
       var col = i % getLength();
 
-      var item = getItem(row, col);
-      if (item.isHidden()) {
-        item = Item.DEFAULT;
-      }
+      var item = getItem(Slot.of(row, col));
 
       itemStacks[i] = item.getItemstack();
     }
@@ -105,10 +109,7 @@ public abstract class InventoryGUI implements InventoryHolder {
     var row = event.getSlot() / getLength();
     var col = event.getSlot() % getLength();
 
-    var item = getItem(row, col);
-    if (item.isHidden()) {
-      item = Item.DEFAULT;
-    }
+    var item = getItem(Slot.of(row, col));
 
     item.onClick(event);
   }

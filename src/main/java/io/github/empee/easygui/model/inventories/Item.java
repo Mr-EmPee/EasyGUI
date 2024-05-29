@@ -24,16 +24,6 @@ public class Item implements Comparable<Item> {
     return of(() -> item);
   }
 
-  public static Item copy(Item item) {
-    var copy = new Item(item.itemstack);
-
-    copy.priority = item.priority;
-    copy.slot = item.slot;
-    copy.clickHandler = item.clickHandler;
-
-    return copy;
-  }
-
   @Contract("_ -> this")
   public Item clickHandler(Consumer<InventoryClickEvent> clickHandler) {
     this.clickHandler = clickHandler;
@@ -50,11 +40,6 @@ public class Item implements Comparable<Item> {
 
   public ItemStack getItemstack() {
     return itemstack.get();
-  }
-
-  @Contract("_ -> this")
-  public Item visibility(Supplier<Boolean> supplier) {
-    return priority(() -> supplier.get() ? 1 : -1);
   }
 
   @Contract("_ -> this")
@@ -76,12 +61,8 @@ public class Item implements Comparable<Item> {
     return priority.get();
   }
 
-  public boolean isHidden() {
-    return getPriority() < 0 || slot == null || slot.get() == null;
-  }
-
-  public void removeSlot() {
-    this.slot = null;
+  public boolean isVisible() {
+    return getPriority() >= 0;
   }
 
   @Contract("_,_ -> this")
