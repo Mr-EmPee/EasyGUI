@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class ScrollableContainer {
 
@@ -57,7 +58,7 @@ public class ScrollableContainer {
     BiFunction<Integer, Integer, List<Item>> itemsProvider = (offset, limit) -> {
       var visibleContent = items.stream()
           .filter(Item::isVisible)
-          .toList();
+          .collect(Collectors.toList());
 
       if (visibleContent.isEmpty()) {
         return Collections.emptyList();

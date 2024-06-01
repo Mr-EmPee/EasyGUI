@@ -7,10 +7,11 @@ plugins {
 version = findProperty("tag") ?: "0.0.3-SNAPSHOT"
 
 dependencies {
-  compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+  compileOnly("com.destroystokyo.paper:paper-api:1.12.2-R0.1-SNAPSHOT")
+  compileOnly("org.jetbrains:annotations:24.1.0")
 }
 
-java.toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(11))
 
 mavenPublishing {
   coordinates("io.github.mr-empee", "easy-gui", version.toString())

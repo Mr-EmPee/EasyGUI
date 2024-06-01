@@ -2,12 +2,13 @@ package io.github.empee.easygui.guis.inventories;
 
 import io.github.empee.easygui.model.inventories.Item;
 import io.github.empee.easygui.model.inventories.Slot;
+import io.github.empee.easygui.utils.InventoryUtils;
 import io.github.empee.easygui.utils.ServerVersion;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.experimental.Accessors;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Accessors(fluent = true, chain = true)
 public abstract class InventoryGUI implements InventoryHolder {
@@ -72,7 +74,7 @@ public abstract class InventoryGUI implements InventoryHolder {
   public List<Item> getItems(@Nullable Slot slot) {
     return content.stream()
         .filter(item -> Objects.equals(slot, item.getSlot()))
-        .toList();
+        .collect(Collectors.toList());
   }
 
   public Item getItem(Slot slot) {
@@ -97,7 +99,7 @@ public abstract class InventoryGUI implements InventoryHolder {
         return;
       }
 
-      player.getOpenInventory().setTitle(title.get());
+      InventoryUtils.setTitle(view, title.get());
     });
   }
 
